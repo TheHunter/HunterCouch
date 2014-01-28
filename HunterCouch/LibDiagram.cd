@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="HunterCouch.Net.UserCredential" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAEgQAAAAEAAAAAAIACAAAAAgAAAAA=</HashCode>
+      <FileName>Net\UserCredential.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HunterCouch.Net.Impl.CouchWebHttpRequest">
+    <Position X="8.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAACAABAAAAAAAEAABAAAAAAEAAAAIAAIAAAAAAA=</HashCode>
+      <FileName>Net\Impl\CouchWebHttpRequest.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HunterCouch.Net.Impl.CouchWebHttpResponse">
+    <Position X="6.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAEAACAAIAAQAIAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Net\Impl\CouchWebHttpResponse.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HunterCouch.Net.Impl.DocumentResponse">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EQgAAEAAAABAAAAAAAAAAAAAAAAAAAAAIAABADEIAAA=</HashCode>
+      <FileName>Net\Impl\DocumentResponse.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HunterCouch.Impl.CouchDocumentSession">
+    <Position X="6.5" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgCAAAAAAAAAAAAAAAAQAAAGACAAAAAEAIQAAgAA=</HashCode>
+      <FileName>Impl\CouchDocumentSession.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HunterCouch.Impl.CouchSessionFactory">
+    <Position X="8.75" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YAAAACAEAAAAAAAJAAAAAgAIAAEECIAAAAAAgCAAAAA=</HashCode>
+      <FileName>Impl\CouchSessionFactory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HunterCouch.CouchConstant">
+    <Position X="4.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAABAAAAAAAAAAAAAAAAAAAQAAAAgAA=</HashCode>
+      <FileName>CouchConstant.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HunterCouch.Exceptions.CouchException">
+    <Position X="20" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\CouchException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HunterCouch.Exceptions.HttpRequestException">
+    <Position X="18.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\HttpRequestException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HunterCouch.Exceptions.HttpResponseException">
+    <Position X="21.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\HttpResponseException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="HunterCouch.IJSessionFactory">
+    <Position X="11.25" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>IJSessionFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="HunterCouch.Net.IWebHttpRequest">
+    <Position X="14.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAACAAAAAAAAAAEAABAAAAAAEAAAAIAAIAAAAAAA=</HashCode>
+      <FileName>Net\IWebHttpRequest.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="HunterCouch.Net.IWebHttpResponse">
+    <Position X="11.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAEAACAAAAAQAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Net\IWebHttpResponse.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="HunterCouch.Net.IJDocumentResponse">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAgAAAAAAABAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Net\IJDocumentResponse.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="HunterCouch.Net.IUserCredential">
+    <Position X="2.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAQAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Net\UserCredential.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="HunterCouch.IJDocumentSession">
+    <Position X="4" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAIQAAgAA=</HashCode>
+      <FileName>IJDocumentSession.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="HunterCouch.IJSessionConfig">
+    <Position X="13.25" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YAAAAAAAAAAAAAABAAAAAgAIAAAAAIAAAAAAACAAAAA=</HashCode>
+      <FileName>IJSessionConfig.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="HunterCouch.Net.ContentType">
+    <Position X="0.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAgA=</HashCode>
+      <FileName>Net\ContentType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="HunterCouch.Net.DocumentMethod">
+    <Position X="0.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIBAAAAAAAAACgEAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Net\DocumentMethod.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

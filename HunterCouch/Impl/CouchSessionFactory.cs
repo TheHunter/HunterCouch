@@ -27,16 +27,15 @@ namespace HunterCouch.Impl
             this.authLevel = authLevel;
 
             serializerSettings = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.None,
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.None,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                    ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
+                };
             
             //
-            serializerSettings.ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor;
-
             ////if (serializerInfo.EnablePolymorphicMembers)
             ////{
             ////    serializer.Binder = new OperationTypeBinder(this.ConfigRegister);
@@ -64,16 +63,20 @@ namespace HunterCouch.Impl
 
         public IJDocumentResponse CreateDataBase(string databaseName)
         {
-            return this.BuildRequest(null, databaseName)
-                       .MethodAs(DocumentMethod.Put)
-                       .GetResponse();
+            //return this.BuildRequest(null, databaseName)
+            //           .MethodAs(DocumentMethod.Put)
+            //           .GetResponse();
+            
+            throw new NotImplementedException();
         }
 
         public IJDocumentResponse EcoCouch()
         {
-            return this.BuildRequest(null)
-                       .MethodAs(DocumentMethod.Get)
-                       .GetResponse();
+            //return this.BuildRequest(null)
+            //           .MethodAs(DocumentMethod.Get)
+            //           .GetResponse();
+
+            throw new NotImplementedException();
         }
         
         public string UriBase { get { return this.uriBase; } }

@@ -16,9 +16,9 @@ namespace HunterCouch.Impl
         private readonly string uriBase;
         private readonly string databaseName;
         private readonly IUserCredential userCredential;
-        private readonly AuthenticationLevel level;
+        private readonly AuthenticationLevel authLevel;
         private readonly JsonSerializerSettings settings;
-        private readonly IJSessionConfig sessionConfig;
+        //private readonly IJSessionConfig sessionConfig;
 
 
         public CouchDocumentSession(string databaseName, IJSessionConfig sessionConfig)
@@ -26,10 +26,61 @@ namespace HunterCouch.Impl
             this.uriBase = sessionConfig.UriBase;
             this.databaseName = databaseName;
             this.userCredential = sessionConfig.UserCredential;
-            this.level = sessionConfig.AuthLevel;
+            this.authLevel = sessionConfig.AuthLevel;
             this.settings = sessionConfig.SerializerSettings;
-            this.sessionConfig = sessionConfig;
+            //this.sessionConfig = sessionConfig;
         }
+
+
+        protected Cookie GetCookie()
+        {
+            if (this.userCredential == null)
+                return null;
+
+            UriBuilder uri = new UriBuilder(this.uriBase) { Path = "_session" };
+
+            IWebHttpResponse response = new CouchWebHttpRequest(uri.ToString(), 10000)
+                .SetHeader("Authorization", this.userCredential.Encode())
+                .MethodAs(DocumentMethod.Post)
+                .ContentTypeAs(ContentType.Form)
+                .WriteBody("name=" + this.userCredential.Username + "&password=" + this.userCredential.Password)
+                .GetResponse()
+                ;
+
+            if (response != null)
+            {
+                string cookieVal = response.GetHeader("Set-Cookie");
+                if (cookieVal != null)
+                {
+                    var parts = cookieVal.Split(';')[0].Split('=');
+                    var authCookie = new Cookie(parts[0], parts[1]) { Domain = response.Server };
+                    return authCookie;
+                }
+            }
+            return null;
+        }
+
+
+        public IWebHttpRequest BuildRequest(params string[] uri)
+        {
+            string url = new UriBuilder(this.uriBase)
+            {
+                Path = string.Join("/", uri.Where(n => !string.IsNullOrWhiteSpace(n)))
+            }.ToString();
+
+            switch (this.authLevel)
+            {
+                case AuthenticationLevel.Basic:
+                    {
+                        return new CouchWebHttpRequest(url, this.userCredential);
+                    }
+                default:
+                    {
+                        return new CouchWebHttpRequest(url, this.GetCookie());
+                    }
+            }
+        }
+
 
         public IJDocumentResponse Load<TDocument>(string id) where TDocument : class
         {
@@ -43,7 +94,7 @@ namespace HunterCouch.Impl
 
         public IJDocumentResponse Store(string id, string jDocument)
         {
-            IWebHttpRequest request = sessionConfig.BuildRequest(this.databaseName, id);
+            IWebHttpRequest request = this.BuildRequest(this.databaseName, id);
             return request.MethodAs(DocumentMethod.Put)
                    .ContentTypeAs(ContentType.Form)
                    .WriteBody(jDocument)

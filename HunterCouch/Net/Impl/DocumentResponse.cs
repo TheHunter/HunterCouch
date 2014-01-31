@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using HunterCouch.Exceptions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace HunterCouch.Net.Impl
@@ -14,7 +15,7 @@ namespace HunterCouch.Net.Impl
     {
         private readonly string etag;
         private readonly string response;
-        private readonly JObject jDocument;
+        //private readonly JObject jDocument;
         private readonly HttpStatusCode statusCode;
         private readonly HttpWebResponse httpResponse;
 
@@ -38,7 +39,7 @@ namespace HunterCouch.Net.Impl
                     {
                         var result = streamReader.ReadToEnd();
                         this.response = string.IsNullOrWhiteSpace(result) ? null : result;
-                        this.jDocument = JObject.Parse(result);
+                        //this.jDocument = JObject.Parse(result);
                     }
                 }
                 this.statusCode = httpResponse.StatusCode;
@@ -66,13 +67,20 @@ namespace HunterCouch.Net.Impl
             get { return response; }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public JObject JDocument
+
+        public TResponse ResponseAs<TResponse>()
         {
-            get { return jDocument; }
+            return JsonConvert.DeserializeObject<TResponse>(this.response);
         }
+
+
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        //public JObject JDocument
+        //{
+        //    get { return jDocument; }
+        //}
 
         /// <summary>
         /// 

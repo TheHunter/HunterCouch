@@ -8,10 +8,11 @@ using Newtonsoft.Json;
 
 namespace HunterCouch
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IJSessionFactory
     {
-        
-
         /// <summary>
         /// 
         /// </summary>

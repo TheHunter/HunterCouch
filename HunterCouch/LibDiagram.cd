@@ -11,7 +11,7 @@
   <Class Name="HunterCouch.Net.Impl.CouchWebHttpRequest">
     <Position X="8.5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAACAABAAAAAAAEAABAAAAAAEAAAAIAAIAAAAAAA=</HashCode>
+      <HashCode>AAIAAACAABAAAAAAAEAABAAAAAAEAAAAIAEIAAAAAAA=</HashCode>
       <FileName>Net\Impl\CouchWebHttpRequest.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -35,7 +35,7 @@
   <Class Name="HunterCouch.Impl.CouchDocumentSession">
     <Position X="6.5" Y="11" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAgCAAAAAAAAAAAAAAAAQAAAGACAAAAAEAIQAAgAA=</HashCode>
+      <HashCode>QBAAgCAEAAAAIAABAAEAAgABgAGACAEAAAEAIQAAgAA=</HashCode>
       <FileName>Impl\CouchDocumentSession.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -43,7 +43,7 @@
   <Class Name="HunterCouch.Impl.CouchSessionFactory">
     <Position X="8.75" Y="11" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>YAAAACAEAAAAAAAJAAAAAgAIAAEECIAAAAAAgCAAAAA=</HashCode>
+      <HashCode>YAAAACAAAAAAAAAAABAAAAAIgAAACIAAAAABgCAAAAA=</HashCode>
       <FileName>Impl\CouchSessionFactory.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -63,17 +63,32 @@
     </TypeIdentifier>
   </Class>
   <Class Name="HunterCouch.Exceptions.HttpRequestException">
-    <Position X="18.25" Y="2.75" Width="1.5" />
+    <Position X="17.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAACAAAAAgAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\HttpRequestException.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="HunterCouch.Exceptions.HttpResponseException">
-    <Position X="21.5" Y="2.75" Width="1.5" />
+    <Position X="20" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAEAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\HttpResponseException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HunterCouch.Impl.SessionConfig">
+    <Position X="11.25" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAACAAAAAAAAAEgAAAAAAIgAAACIAAAAAAACAAAAA=</HashCode>
+      <FileName>Impl\SessionConfig.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HunterCouch.Exceptions.CouchParameterException">
+    <Position X="22.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\CouchParameterException.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="HunterCouch.IJSessionFactory">
@@ -86,7 +101,7 @@
   <Interface Name="HunterCouch.Net.IWebHttpRequest">
     <Position X="14.25" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAACAAAAAAAAAAEAABAAAAAAEAAAAIAAIAAAAAAA=</HashCode>
+      <HashCode>AAIAAACAAAAAAAAAAEAABAAAAAAEAAAAIAEIAAAAAAA=</HashCode>
       <FileName>Net\IWebHttpRequest.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -121,8 +136,15 @@
   <Interface Name="HunterCouch.IJSessionConfig">
     <Position X="13.25" Y="11" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>YAAAAAAAAAAAAAABAAAAAgAIAAAAAIAAAAAAACAAAAA=</HashCode>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAIAAAAAIAAAAAAACAAAAA=</HashCode>
       <FileName>IJSessionConfig.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="HunterCouch.IJAdvancedSession">
+    <Position X="4" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QBAAAAAEAAAAAAAAAAEAAAABAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>IJAdvancedSession.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Enum Name="HunterCouch.Net.ContentType">

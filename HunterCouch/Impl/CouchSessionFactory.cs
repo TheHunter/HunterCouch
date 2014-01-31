@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using HunterCouch.Exceptions;
 using HunterCouch.Net;
 using HunterCouch.Net.Impl;
 using Newtonsoft.Json;
@@ -12,19 +13,29 @@ using Newtonsoft.Json.Serialization;
 namespace HunterCouch.Impl
 {
     public class CouchSessionFactory
-        : IJSessionFactory, IJSessionConfig
+        : CouchStoreChannel, IJSessionFactory, IAdvancedStoreManager, IDisposable
     {
-        private readonly string uriBase;
-        private readonly IUserCredential userCredential;
-        private readonly AuthenticationLevel authLevel;
         private readonly JsonSerializerSettings serializerSettings;
+        private readonly HashSet<IJDocumentSession> sessionUsers; 
 
 
         public CouchSessionFactory(string uriBase, IUserCredential userCredential, AuthenticationLevel authLevel)
+            : base(uriBase, userCredential, authLevel)
         {
-            this.uriBase = uriBase;
-            this.userCredential = userCredential;
-            this.authLevel = authLevel;
+            if (string.IsNullOrWhiteSpace(uriBase))
+                throw new CouchParameterException("UriBase on IJSessionConfig cannot be empty or null.", "uriBase");
+
+            if (userCredential == null)
+                throw new CouchParameterException("userCredential on IJSessionConfig cannot be null.", "userCredential");
+
+            try
+            {
+                this.EchoCouch();
+            }
+            catch (Exception ex)
+            {
+                throw new CouchException(ex.Message, ex);
+            }
 
             serializerSettings = new JsonSerializerSettings
                 {
@@ -34,58 +45,45 @@ namespace HunterCouch.Impl
                     ContractResolver = new CamelCasePropertyNamesContractResolver(),
                     ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
                 };
-            
-            //
-            ////if (serializerInfo.EnablePolymorphicMembers)
-            ////{
-            ////    serializer.Binder = new OperationTypeBinder(this.ConfigRegister);
-            ////    serializer.TypeNameHandling = TypeNameHandling.Objects;
-            ////}
+
+            this.sessionUsers = new HashSet<IJDocumentSession>();
         }
 
 
         public IJDocumentSession OpenSession(string databaseName)
         {
-            return new CouchDocumentSession(databaseName, this);
+            return this.GetSession(databaseName, this.UserCredential, this.AuthLevel);
         }
 
 
         public IJDocumentSession OpenSession(string databaseName, IUserCredential credential)
         {
-            return new CouchDocumentSession(databaseName, this);
+            return this.GetSession(databaseName, credential, this.AuthLevel);
         }
 
 
         public IJDocumentSession OpenSession(string databaseName, IUserCredential credential, AuthenticationLevel level)
         {
-            return new CouchDocumentSession(databaseName, this);
+            return this.GetSession(databaseName, credential, level);
         }
 
-        public IJDocumentResponse CreateDataBase(string databaseName)
+
+        private IJDocumentSession GetSession(string databaseName, IUserCredential credential, AuthenticationLevel level)
         {
-            //return this.BuildRequest(null, databaseName)
-            //           .MethodAs(DocumentMethod.Put)
-            //           .GetResponse();
-            
-            throw new NotImplementedException();
+            IJDocumentSession session = this.sessionUsers.FirstOrDefault(
+                advSession =>
+                advSession.AuthLevel == level && advSession.DatabaseName.Equals(databaseName) &&
+                advSession.UserCredential.Equals(credential));
+
+            if (session == null)
+            {
+                session = new CouchDocumentSession(this.UriBase, databaseName, credential, level,
+                                                   this.SerializerSettings);
+                this.sessionUsers.Add(session);
+            }
+
+            return session;
         }
-
-        public IJDocumentResponse EcoCouch()
-        {
-            //return this.BuildRequest(null)
-            //           .MethodAs(DocumentMethod.Get)
-            //           .GetResponse();
-
-            throw new NotImplementedException();
-        }
-        
-        public string UriBase { get { return this.uriBase; } }
-
-
-        public IUserCredential UserCredential { get { return this.userCredential; } }
-
-
-        public AuthenticationLevel AuthLevel { get { return this.authLevel; } }
 
 
         public Func<PropertyInfo, bool> IdentityResolver { get; set; }
@@ -93,56 +91,61 @@ namespace HunterCouch.Impl
 
         public JsonSerializerSettings SerializerSettings { get { return this.serializerSettings; } }
 
-
-        protected Cookie GetCookie()
+        void IDisposable.Dispose()
         {
-            if (this.userCredential == null)
-                return null;
-
-            UriBuilder uri = new UriBuilder(this.uriBase) {Path = "_session"};
-
-            IWebHttpResponse response = new CouchWebHttpRequest(uri.ToString(), 10000)
-                .SetHeader("Authorization", this.userCredential.Encode())
-                .MethodAs(DocumentMethod.Post)
-                .ContentTypeAs(ContentType.Form)
-                .WriteBody("name=" + this.userCredential.Username + "&password=" + this.userCredential.Password)
-                .GetResponse()
-                ;
-
-            if (response != null)
-            {
-                string cookieVal = response.GetHeader("Set-Cookie");
-                if (cookieVal != null)
-                {
-                    var parts = cookieVal.Split(';')[0].Split('=');
-                    var authCookie = new Cookie(parts[0], parts[1]) { Domain = response.Server };
-                    return authCookie;
-                }
-            }
-
-            return null;
+            this.sessionUsers.Clear();
         }
 
-
-        public IWebHttpRequest BuildRequest(params string[] uri)
+        public IJDocumentResponse EchoCouch()
         {
-            string url = new UriBuilder(this.uriBase)
-            {
-                Path = string.Join("/", uri.Where(n => !string.IsNullOrWhiteSpace(n)))
-            }.ToString();
-
-            switch (this.authLevel)
-            {
-                case AuthenticationLevel.Basic:
-                    {
-                        return new CouchWebHttpRequest(url, this.userCredential);
-                    }
-                default:
-                    {
-                        return new CouchWebHttpRequest(url, this.GetCookie());
-                    }
-            }
+            return this.BuildRequest(null)
+                       .MethodAs(DocumentMethod.Get)
+                       .GetResponse();
         }
 
+        public IJDocumentResponse CreateDataBase(string dbName)
+        {
+            return this.BuildRequest(dbName)
+                       .MethodAs(DocumentMethod.Put)
+                       .GetResponse();
+        }
+
+        public IJDocumentResponse DeleteDataBase(string dbName)
+        {
+            return this.BuildRequest(dbName)
+                       .MethodAs(DocumentMethod.Delete)
+                       .GetResponse();
+        }
+
+        public IJDocumentResponse ExistsDataBase(string dbName)
+        {
+            return this.BuildRequest(dbName)
+                       .MethodAs(DocumentMethod.Get)
+                       .GetResponse();
+        }
+
+        public IJDocumentResponse CreateAdminUser(IUserCredential credential)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IJDocumentResponse DeleteAdminUser(IUserCredential credential)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IJDocumentResponse GenerateUUID(int count)
+        {
+            if (count < 0)
+                throw new CouchParameterException("The count of UUID to generate cannot be less or equals than zero", "count");
+
+            if (count > 50)
+                count = 50;
+
+            return this.BuildRequest("_uuids", "?Count=" + count)
+                       .MethodAs(DocumentMethod.Get)
+                       .ContentTypeAs(ContentType.Json)
+                       .GetResponse();
+        }
     }
 }

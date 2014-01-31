@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
+using HunterCouch.Exceptions;
 using HunterCouch.Impl;
 using HunterCouch.Net;
 using HunterCouch.Test.Pocos;
@@ -13,50 +15,96 @@ namespace HunterCouch.Test
     public class Tester
     {
         [Test]
-        public void Test1()
+        public void EchoDatabaseTest()
         {
-            //string uriBase = "http://127.0.0.1:5984";
+            const string uriBase = "http://localhost:5984/";
+            IUserCredential crd = new UserCredential("Professor", "Farnsworth");
+
+            var sessionFactory = new CouchSessionFactory(uriBase, crd, AuthenticationLevel.Cookie);
+            var response = sessionFactory.EchoCouch();
+
+            Assert.IsTrue(response.StatusCode == HttpStatusCode.OK);
+
+        }
+
+        [Test]
+        [ExpectedException(typeof(CouchException))]
+        public void FailedEchoDatabaseTest()
+        {
+            const string uriBase = "http://localhost:5900/";
+            IUserCredential crd = new UserCredential("Professor", "Farnsworth");
+
+            new CouchSessionFactory(uriBase, crd, AuthenticationLevel.Cookie);
+        }
+
+        [Test]
+        public void CreateDatabaseTest()
+        {
             const string uriBase = "http://localhost:5984/";
             IUserCredential crd = new UserCredential("Professor", "Farnsworth");
             
             var sessionFactory = new CouchSessionFactory(uriBase, crd, AuthenticationLevel.Cookie);
-            var response = sessionFactory.CreateDataBase("ciccio");
+            
+            var response1 = sessionFactory.CreateDataBase("ciccio");
+            Assert.IsTrue(response1.StatusCode == HttpStatusCode.Created);
 
-            //var sessionFactory = new CoachSessionFactory(uriBase, null, AuthenticationLevel.Basic);
-            //var response = sessionFactory.EcoCouch();
+            var response2 = sessionFactory.DeleteDataBase("ciccio");
+            Assert.IsTrue(response2.StatusCode == HttpStatusCode.OK);
+        }
 
-            Assert.IsNotNull(response);
+        [Test]
+        public void FailedCreateDatabaseTest()
+        {
+            const string uriBase = "http://localhost:5984/";
+            IUserCredential crd = new UserCredential("Professor", "Farnsworth");
+
+            var sessionFactory = new CouchSessionFactory(uriBase, crd, AuthenticationLevel.Cookie);
+
+            var response = sessionFactory.CreateDataBase("_ciccio");
+            var rr = response.ResponseAs<HttpErrorResponse>();
+
+            Assert.IsNotNull(rr);
+            Assert.IsTrue(rr.Reason.StartsWith("Name:"));
+            Assert.IsTrue(response.StatusCode == HttpStatusCode.BadRequest);
 
         }
 
-        public void TestCreateDb()
+        [Test]
+        public void FailedDeleteDatabaseTest()
         {
-            string databaseName = "love-seat-test-base";
-            string uriBase = "http://localhost:5984/";
+            const string uriBase = "http://localhost:5984/";
+            IUserCredential crd = new UserCredential("Professor", "Farnsworth");
 
-            string username = "Professor";
-            string password = "Farnsworth";
-            AuthenticationLevel level = AuthenticationLevel.Cookie;
+            var sessionFactory = new CouchSessionFactory(uriBase, crd, AuthenticationLevel.Cookie);
+            var response = sessionFactory.DeleteDataBase("nodb");
 
+            var rr = response.ResponseAs<HttpErrorResponse>();
 
+            Assert.IsNotNull(rr);
+            Assert.AreEqual(rr.Reason, "missing");
+            Assert.IsNotNull(response.StatusCode == HttpStatusCode.NotFound);
 
         }
 
 
         [Test]
-        public void Test2()
+        public void ExistsDatabaseTest()
         {
-            string uriBase = "http://localhost:5984/";
+            const string uriBase = "http://localhost:5984/";
             IUserCredential crd = new UserCredential("Professor", "Farnsworth");
 
-            var sessionFactory = new CouchSessionFactory(uriBase, crd, AuthenticationLevel.Basic);
-            var session = sessionFactory.OpenSession("salesarea");
+            var sessionFactory = new CouchSessionFactory(uriBase, crd, AuthenticationLevel.Cookie);
 
-            Person p = new Person{ Name = "name", Surname = "surname"};
-            var res = session.Store("1", p);
+            var response1 = sessionFactory.ExistsDataBase("db");
+            var rr = response1.ResponseAs<HttpErrorResponse>();
 
-            Assert.IsNotNull(res);
+            Assert.IsNotNull(rr);
+            Assert.IsTrue(rr.Reason.StartsWith("no_db_file"));
+            Assert.IsTrue(response1.StatusCode == HttpStatusCode.NotFound);
+
+
+            var response2 = sessionFactory.ExistsDataBase("_users");
+            Assert.IsTrue(response2.StatusCode == HttpStatusCode.OK);
         }
-
     }
 }

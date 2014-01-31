@@ -46,11 +46,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CouchConstant.cs" />
+    <Compile Include="CouchStorechannel.cs" />
     <Compile Include="Exceptions\CouchException.cs" />
+    <Compile Include="Exceptions\CouchParameterException.cs" />
     <Compile Include="Exceptions\HttpRequestException.cs" />
     <Compile Include="Exceptions\HttpResponseException.cs" />
+    <Compile Include="HttpErrorResponse.cs" />
+    <Compile Include="IAdvancedStoreManager.cs" />
     <Compile Include="IJDocumentSession.cs" />
-    <Compile Include="IJSessionConfig.cs" />
     <Compile Include="IJSessionFactory.cs" />
     <Compile Include="Impl\CouchDocumentSession.cs" />
     <Compile Include="Impl\CouchSessionFactory.cs" />

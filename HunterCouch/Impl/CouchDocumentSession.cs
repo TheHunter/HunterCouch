@@ -10,77 +10,83 @@ using Newtonsoft.Json.Linq;
 
 namespace HunterCouch.Impl
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class CouchDocumentSession
-        : IJDocumentSession
+        : CouchStoreChannel, IJDocumentSession
     {
-        private readonly string uriBase;
         private readonly string databaseName;
-        private readonly IUserCredential userCredential;
-        private readonly AuthenticationLevel authLevel;
         private readonly JsonSerializerSettings settings;
-        //private readonly IJSessionConfig sessionConfig;
+        private readonly DateTime createdAt;
 
 
-        public CouchDocumentSession(string databaseName, IJSessionConfig sessionConfig)
+        //public CouchDocumentSession(string databaseName, IJSessionConfig sessionConfig)
+        //{
+        //    this.uriBase = sessionConfig.UriBase;
+        //    this.databaseName = databaseName;
+        //    this.userCredential = sessionConfig.UserCredential;
+        //    this.authLevel = sessionConfig.AuthLevel;
+        //    this.settings = sessionConfig.SerializerSettings;
+        //    this.createdAt = DateTime.Now;
+        //}
+
+        public CouchDocumentSession(string uriBase, string databaseName, IUserCredential userCredential, AuthenticationLevel authLevel, JsonSerializerSettings serializerSettings)
+            : base(uriBase, userCredential, authLevel)
         {
-            this.uriBase = sessionConfig.UriBase;
             this.databaseName = databaseName;
-            this.userCredential = sessionConfig.UserCredential;
-            this.authLevel = sessionConfig.AuthLevel;
-            this.settings = sessionConfig.SerializerSettings;
-            //this.sessionConfig = sessionConfig;
+            this.settings = serializerSettings;
+            this.createdAt = DateTime.Now;
         }
 
 
-        protected Cookie GetCookie()
-        {
-            if (this.userCredential == null)
-                return null;
+        //protected Cookie GetCookie()
+        //{
+        //    if (this.UserCredential == null)
+        //        return null;
 
-            UriBuilder uri = new UriBuilder(this.uriBase) { Path = "_session" };
+        //    UriBuilder uri = new UriBuilder(this.uriBase) { Path = "_session" };
 
-            IWebHttpResponse response = new CouchWebHttpRequest(uri.ToString(), 10000)
-                .SetHeader("Authorization", this.userCredential.Encode())
-                .MethodAs(DocumentMethod.Post)
-                .ContentTypeAs(ContentType.Form)
-                .WriteBody("name=" + this.userCredential.Username + "&password=" + this.userCredential.Password)
-                .GetResponse()
-                ;
+        //    IWebHttpResponse response = new CouchWebHttpRequest(uri.ToString(), 10000)
+        //        .SetHeader("Authorization", this.UserCredential.Encode())
+        //        .MethodAs(DocumentMethod.Post)
+        //        .ContentTypeAs(ContentType.Form)
+        //        .WriteBody("name=" + this.UserCredential.Username + "&password=" + this.UserCredential.Password)
+        //        .GetResponse()
+        //        ;
 
-            if (response != null)
-            {
-                string cookieVal = response.GetHeader("Set-Cookie");
-                if (cookieVal != null)
-                {
-                    var parts = cookieVal.Split(';')[0].Split('=');
-                    var authCookie = new Cookie(parts[0], parts[1]) { Domain = response.Server };
-                    return authCookie;
-                }
-            }
-            return null;
-        }
+        //    if (response != null)
+        //    {
+        //        string cookieVal = response.GetHeader("Set-Cookie");
+        //        if (cookieVal != null)
+        //        {
+        //            var parts = cookieVal.Split(';')[0].Split('=');
+        //            var authCookie = new Cookie(parts[0], parts[1]) { Domain = response.Server };
+        //            return authCookie;
+        //        }
+        //    }
+        //    return null;
+        //}
 
+        //protected IWebHttpRequest BuildRequest(params string[] uri)
+        //{
+        //    string url = new UriBuilder(this.uriBase)
+        //    {
+        //        Path = string.Join("/", uri.Where(n => !string.IsNullOrWhiteSpace(n)))
+        //    }.ToString();
 
-        public IWebHttpRequest BuildRequest(params string[] uri)
-        {
-            string url = new UriBuilder(this.uriBase)
-            {
-                Path = string.Join("/", uri.Where(n => !string.IsNullOrWhiteSpace(n)))
-            }.ToString();
-
-            switch (this.authLevel)
-            {
-                case AuthenticationLevel.Basic:
-                    {
-                        return new CouchWebHttpRequest(url, this.userCredential);
-                    }
-                default:
-                    {
-                        return new CouchWebHttpRequest(url, this.GetCookie());
-                    }
-            }
-        }
-
+        //    switch (this.AuthLevel)
+        //    {
+        //        case AuthenticationLevel.Basic:
+        //            {
+        //                return new CouchWebHttpRequest(url, this.UserCredential);
+        //            }
+        //        default:
+        //            {
+        //                return new CouchWebHttpRequest(url, this.GetCookie());
+        //            }
+        //    }
+        //}
 
         public IJDocumentResponse Load<TDocument>(string id) where TDocument : class
         {
@@ -124,7 +130,6 @@ namespace HunterCouch.Impl
             return this.Store(id, document);
         }
 
-
         public void Delete<TDocument>(string id) where TDocument : class
         {
             throw new NotImplementedException();
@@ -144,5 +149,9 @@ namespace HunterCouch.Impl
         {
             throw new NotImplementedException();
         }
+
+
+        public string DatabaseName { get { return this.databaseName; } }
+        
     }
 }

@@ -91,6 +91,7 @@ namespace HunterCouch.Impl
 
         public JsonSerializerSettings SerializerSettings { get { return this.serializerSettings; } }
 
+
         void IDisposable.Dispose()
         {
             this.sessionUsers.Clear();

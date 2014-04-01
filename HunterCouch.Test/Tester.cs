@@ -106,5 +106,17 @@ namespace HunterCouch.Test
             var response2 = sessionFactory.ExistsDataBase("_users");
             Assert.IsTrue(response2.StatusCode == HttpStatusCode.OK);
         }
+
+        [Test]
+        public void GenerateUUIDTest()
+        {
+            const string uriBase = "http://localhost:5984/";
+            IUserCredential crd = new UserCredential("Professor", "Farnsworth");
+
+            var sessionFactory = new CouchSessionFactory(uriBase, crd, AuthenticationLevel.Cookie);
+
+            var response1 = sessionFactory.GenerateUUID(10);
+            Assert.IsTrue(response1.StatusCode == HttpStatusCode.OK);
+        }
     }
 }

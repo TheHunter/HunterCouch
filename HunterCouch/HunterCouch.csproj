@@ -57,6 +57,10 @@
     <Compile Include="IJSessionFactory.cs" />
     <Compile Include="Impl\CouchDocumentSession.cs" />
     <Compile Include="Impl\CouchSessionFactory.cs" />
+    <Compile Include="Linq\ICouchQueryInspector.cs" />
+    <Compile Include="Linq\ICouchQueryProvider.cs" />
+    <Compile Include="Linq\Impl\CouchQueryInspector.cs" />
+    <Compile Include="Linq\Impl\CouchQueryProvider.cs" />
     <Compile Include="Net\AuthenticationLevel.cs" />
     <Compile Include="Net\ContentType.cs" />
     <Compile Include="Net\IJDocumentResponse.cs" />
